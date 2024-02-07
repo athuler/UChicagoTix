@@ -36,15 +36,33 @@ preg_match_all($pattern, $file, $matches);
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	</head>
-	<body>
+	<body class="container">
+		<img src="" class="img-fluid" alt="" id="headerImg">
 		<h1>Falsettos Tickets</h1>
 		
 		<!-- All Performances -->
-		<div class="row">
-			<!-- Performance Template -->
-			<div id="performanceTemplate" class="row">
-				<span class="perf_date"></span>
+		<div class="card">
+			<div class="card-header">
+				Performances
 			</div>
+			
+			<!-- Performance Template -->
+			<ul class="list-group list-group-flush">
+				<div></div>
+				<li id="performanceTemplate" class="list-group-item">
+					<div class="card-body row">
+						
+						<!-- Performance Date -->
+						<span class="perf_date col-auto"></span>
+						
+						<!-- Number of Tickets Left -->
+						<i class="perf_tix_left col"></i>
+						
+						<!-- Buy Now -->
+						<!--<button class="btn btn-danger col">Buy Now!</button>-->
+					</div>
+				</li>
+			</ul>
 		</div>
 		
 		
@@ -54,12 +72,17 @@ preg_match_all($pattern, $file, $matches);
 			var jsObject = {<?=$matches[1][0];?>};
 			console.debug(jsObject);
 			
+			// Set Header Image
+			document.getElementById("headerImg").src = "https://tickets.uchicago.edu"+jsObject["searchResults"][0][20];
+			
+			// Set Template Element
+			template = document.getElementById("performanceTemplate");
+			
 			// Display Each Performance
 			for (const performance of jsObject["searchResults"]){
 				console.debug(performance);
 				
 				// Create New Performance
-				template = document.getElementById("performanceTemplate");
 				let thisPerformance = template.cloneNode(true);
 				template.before(thisPerformance); // Set Position
 				
@@ -68,9 +91,22 @@ preg_match_all($pattern, $file, $matches);
 				
 				// Set Performance Date & time
 				thisPerformance.querySelector('.perf_date').textContent = performance[7];
+				
+				// Set Number of Tickets Left
+				thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
+				
+				
+				
 			}
 			
+			// Delete Template
+			template.remove();
+			
 		</script>
+		
+		<style>
+			#performanceTemplate {visibility: hidden;}
+		</style>
 		
 		<!-- Bootstrap -->
 		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
