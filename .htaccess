@@ -1,3 +1,7 @@
-
 RewriteEngine On
-RewriteRule ^([^/]+)/?$ index.php?show=$1 [L]
+
+# Redirect /UChicagoTix/shownamehere to /UChicagoTix/?show=shownamehere (for local environment)
+# RewriteRule ^/UChicagoTix/([^/]+)/?$ /UChicagoTix/?show=$1 [L,R=301]
+
+# Rewrite /shownamehere to /?show=shownamehere (for production environment)
+# RewriteRule ^([^/]+)/?$ /?show=$1 [L]

@@ -1,8 +1,23 @@
 <?php
 	
+// Load Show URL info
+$json = json_decode(file_get_contents("show_urls.json"), true);
 
+// Falsettos is the default URL
 $url = "https://tickets.uchicago.edu/Online/default.asp?doWork::WScontent::loadArticle=Load&BOparam::WScontent::loadArticle::article_id=80CABB0D-1081-4DC3-BDEC-FFBD195F45E1";
 
+// Check Whether a Show is Provided
+if(isset($_GET["show"]) ){
+	
+	// Check Whether the Passed Show is Valid
+	if(array_key_exists($_GET["show"], $json)){
+		$url = "https://tickets.uchicago.edu/Online/default.asp?doWork::WScontent::loadArticle=Load&BOparam::WScontent::loadArticle::article_id=" . $json[$_GET["show"]];
+	} else {
+		echo("Invalid Show! " . "<br/>");
+	}
+} else {
+	echo("No variable");
+}
 
 // Scrape Ticketing Webpage
 $opts = array('http'=>array('header' => "User-Agent:AndreiThulerDotCom/1.0\r\n")); 
