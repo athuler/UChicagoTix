@@ -15,6 +15,11 @@ $pattern = '~var articleContext = {(.*?)};~s';
 preg_match_all($pattern, $file, $matches);
 //var_dump($matches);
 
+// Get header image
+$pattern = '~<img alt="" src="/(.*?)"/>~s';
+preg_match_all($pattern, $file, $header_matches);
+//var_dump($header_matches);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,7 +44,7 @@ preg_match_all($pattern, $file, $matches);
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body class="container">
-		<img src="" class="img-fluid" alt="" id="headerImg">
+		<img src="https://tickets.uchicago.edu/<?=$header_matches[1][0];?>" class="img-fluid" alt="" id="headerImg">
 		<h1>Falsettos Tickets</h1>
 		
 		<!-- All Performances -->
@@ -75,7 +80,7 @@ preg_match_all($pattern, $file, $matches);
 			console.debug(jsObject);
 			
 			// Set Header Image
-			document.getElementById("headerImg").src = "https://tickets.uchicago.edu"+jsObject["searchResults"][0][20];
+			//document.getElementById("headerImg").src = "https://tickets.uchicago.edu"+jsObject["searchResults"][0][20];
 			
 			// Set Template Element
 			template = document.getElementById("performanceTemplate");
