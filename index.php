@@ -9,6 +9,19 @@ $opts = array('http'=>array('header' => "User-Agent:AndreiThulerDotCom/1.0\r\n")
 $context = stream_context_create($opts);
 $file = file_get_contents($url,false,$context);
 
+$cookies = array();
+foreach ($http_response_header as $hdr) {
+	if (preg_match('/^Set-Cookie:\s*([^;]+)/', $hdr, $matches)) {
+		parse_str($matches[1], $tmp);
+		$cookies += $tmp;
+		//var_dump($tmp);
+	}
+}
+foreach($cookies as $cookieName => $cookieValue) {
+	setcookie($cookieName,$cookieValue);
+}
+//var_dump($cookies);
+
 
 // Get Performances Data
 $pattern = '~var articleContext = {(.*?)};~s';
@@ -42,7 +55,7 @@ $show_name = $title_matches[1][0];
 			gtag('config', 'G-NBY0B8EGKP');
 		</script>
 
-		<title>Falsettos Tickets</title>
+		<title><?=$show_name;?> Tickets</title>
 		
 		<!-- Bootstrap -->
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -76,12 +89,21 @@ $show_name = $title_matches[1][0];
 						<i class="perf_tix_left col"></i>
 						
 						<!-- Buy Now -->
-						<!--<button class="btn btn-danger col">Buy Now!</button>-->
+						<form action="https://tickets.uchicago.edu/Online/seatSelect.asp" method="post" target="_parent">
+							<input class="sessionToken" type="hidden" name="sToken" value="" />
+							<input class="perf_id1" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_ids" value="" />
+							<input class="perf_id2" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_id" value="" />
+							<input type="hidden" name="createBO::WSmap" value="1" />
+							<!--<button class="btn btn-danger col">Buy Now!</button>-->
+						</form>
 					</div>
 				</li>
 			</ul>
 		</div>
 		
+		<!-- Footer -->
+		<br/><hr/>
+		Made by <a href="https://andreithuler.com/" target="__blank">Andrei Thüler</a>.
 		
 		<script>
 			
@@ -99,7 +121,7 @@ $show_name = $title_matches[1][0];
 			document.getElementById("show_location").textContent = jsObject["searchResults"][0][63];
 			
 			// Set Map
-			document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58]
+			document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58];
 			
 			
 			// Display Each Performance
@@ -116,11 +138,19 @@ $show_name = $title_matches[1][0];
 				// Set Performance Date & time
 				thisPerformance.querySelector('.perf_date').textContent = performance[7];
 				
+				// Set Buy Button Session Token
+				thisPerformance.querySelector('.sessionToken').value = jsObject["sToken"];
+				
+				// Set Buy Button Performance ID
+				thisPerformance.querySelector('.perf_id1').value = performance[0];
+				thisPerformance.querySelector('.perf_id2').value = performance[0];
+				
 				// Set Number of Tickets Left
 				if(performance[16] != 0) {
 					thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
 				} else {
 					thisPerformance.querySelector('.perf_tix_left').textContent = "Sold Out!";
+					thisPerformance.querySelector('form').remove();
 				}
 				
 				
