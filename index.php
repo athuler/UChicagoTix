@@ -9,14 +9,17 @@ $url = "https://tickets.uchicago.edu/Online/default.asp?doWork::WScontent::loadA
 // Check Whether a Show is Provided
 if(isset($_GET["show"]) ){
 	
+	$_GET["show"] = strtolower($_GET["show"]);
+	
+	
 	// Check Whether the Passed Show is Valid
 	if(array_key_exists($_GET["show"], $json)){
 		$url = "https://tickets.uchicago.edu/Online/default.asp?doWork::WScontent::loadArticle=Load&BOparam::WScontent::loadArticle::article_id=" . $json[$_GET["show"]];
 	} else {
-		echo("Invalid Show! " . "<br/>");
+		echo("Invalid Show!<br/>");
 	}
 } else {
-	echo("No variable");
+	echo("No variable<br/>");
 }
 
 // Scrape Ticketing Webpage
