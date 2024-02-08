@@ -20,6 +20,14 @@ $pattern = '~<img alt="" src="/(.*?)"/>~s';
 preg_match_all($pattern, $file, $header_matches);
 //var_dump($header_matches);
 
+
+// Get show title
+$pattern = '~<title>(.*?)</title>~s';
+preg_match_all($pattern, $file, $title_matches);
+//var_dump($title_matches);
+$show_name = $title_matches[1][0];
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -45,7 +53,9 @@ preg_match_all($pattern, $file, $header_matches);
 	</head>
 	<body class="container">
 		<img src="https://tickets.uchicago.edu/<?=$header_matches[1][0];?>" class="img-fluid" alt="" id="headerImg">
-		<h1>Falsettos Tickets</h1>
+		<h1><?=$show_name;?></h1>
+		
+		<p><i id="show_location"></i> (<a id="location_map" href="" target="__blank">Map</a>)</p>
 		
 		<!-- All Performances -->
 		<div class="card">
@@ -84,6 +94,13 @@ preg_match_all($pattern, $file, $header_matches);
 			
 			// Set Template Element
 			template = document.getElementById("performanceTemplate");
+			
+			// Set Show Location
+			document.getElementById("show_location").textContent = jsObject["searchResults"][0][63];
+			
+			// Set Map
+			document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58]
+			
 			
 			// Display Each Performance
 			for (const performance of jsObject["searchResults"]){
