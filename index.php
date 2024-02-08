@@ -10,7 +10,7 @@ $context = stream_context_create($opts);
 $file = file_get_contents($url,false,$context);
 
 
-// Get Data
+// Get Performances Data
 $pattern = '~var articleContext = {(.*?)};~s';
 preg_match_all($pattern, $file, $matches);
 //var_dump($matches);
@@ -95,7 +95,11 @@ preg_match_all($pattern, $file, $matches);
 				thisPerformance.querySelector('.perf_date').textContent = performance[7];
 				
 				// Set Number of Tickets Left
-				thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
+				if(performance[16] != 0) {
+					thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
+				} else {
+					thisPerformance.querySelector('.perf_tix_left').textContent = "Sold Out!";
+				}
 				
 				
 				
