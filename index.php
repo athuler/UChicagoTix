@@ -50,6 +50,11 @@ preg_match_all($pattern, $file, $matches);
 $pattern = '~<img alt="" src="/(.*?)"/>~s';
 preg_match_all($pattern, $file, $header_matches);
 //var_dump($header_matches);
+if(sizeof($header_matches[1]) != 0) {
+	$header_src = $header_matches[1][0];
+} else{
+	$header_src = "";
+}
 
 
 // Get show title
@@ -83,7 +88,7 @@ $show_name = $title_matches[1][0];
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body class="container">
-		<img src="https://tickets.uchicago.edu/<?=$header_matches[1][0];?>" class="img-fluid" alt="" id="headerImg">
+		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid" alt="" id="headerImg">
 		<h1><?=$show_name;?></h1>
 		
 		<p><i id="show_location"></i> (<a id="location_map" href="" target="__blank">Map</a>)</p>
@@ -91,7 +96,7 @@ $show_name = $title_matches[1][0];
 		<!-- All Performances -->
 		<div class="card">
 			<div class="card-header">
-				Performances
+				Performances (<span id="num_performances"></span>)
 			</div>
 			
 			<!-- Performance Template -->
@@ -141,6 +146,8 @@ $show_name = $title_matches[1][0];
 			// Set Map
 			document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58];
 			
+			// Set Number of Performances
+			document.getElementById("num_performances").textContent = jsObject["searchResults"].length;
 			
 			// Display Each Performance
 			for (const performance of jsObject["searchResults"]){
