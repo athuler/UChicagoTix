@@ -21,7 +21,7 @@ if(isset($_GET["show"]) ){
 }
 
 // Scrape Ticketing Webpage
-$opts = array('http'=>array('header' => "User-Agent:AndreiThulerDotCom/1.0\r\n")); 
+$opts = array('http'=>array('header' => "User-Agent:" . $_SERVER['HTTP_USER_AGENT'])); 
 $context = stream_context_create($opts);
 $file = file_get_contents($url,false,$context);
 
@@ -94,7 +94,7 @@ $show_name = $title_matches[1][0];
 		<!-- All Performances -->
 		<div class="card">
 			<div class="card-header">
-				Performances (<span id="num_performances"></span>)
+				<span id="num_performances"></span> Performances
 			</div>
 			
 			<!-- Performance Template -->
@@ -107,15 +107,16 @@ $show_name = $title_matches[1][0];
 						<span class="perf_date col-auto"></span>
 						
 						<!-- Number of Tickets Left -->
-						<i class="perf_tix_left col"></i>
+						<i class="perf_tix_left col-auto"></i>
 						
 						<!-- Buy Now -->
-						<form action="https://tickets.uchicago.edu/Online/seatSelect.asp" method="post" target="_parent">
+						<a href="<?=$url;?>" target="__blank" class="col-auto float-end buying"><button class="btn">Buy Now!</button></a>
+						
+						<form style="visibility:hidden;">
 							<input class="sessionToken" type="hidden" name="sToken" value="" />
 							<input class="perf_id1" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_ids" value="" />
 							<input class="perf_id2" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_id" value="" />
 							<input type="hidden" name="createBO::WSmap" value="1" />
-							<!--<button class="btn btn-danger col">Buy Now!</button>-->
 						</form>
 					</div>
 				</li>
@@ -175,6 +176,29 @@ $show_name = $title_matches[1][0];
 					thisPerformance.querySelector('.perf_tix_left').textContent = "Sold Out!";
 					thisPerformance.querySelector('form').remove();
 				}
+				
+				// Set Whether Buying is possible
+				if(performance[14] != "S") {
+					thisPerformance.querySelector('.buying').removeAttribute("href");
+					thisPerformance.querySelector('.btn').disabled = true;
+					thisPerformance.querySelector('.btn').textContent = "Not on Sale";
+				}
+				
+				// Set Buying button Color
+				switch(performance[15]) {
+					case "G":
+						var btnClass = "btn-warning";
+						break;
+					case "L":
+						var btnClass = "btn-danger";
+						break;
+					case "E":
+						var btnClass = "btn-success";
+						break;
+				}
+				thisPerformance.querySelector('.btn').classList.add(btnClass);
+				
+				
 				
 				
 				
