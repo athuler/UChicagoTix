@@ -33,7 +33,12 @@ if(isset($_GET["show"]) ){
 // Scrape Ticketing Webpage
 $opts = array('http'=>array('header' => "User-Agent:" . $_SERVER['HTTP_USER_AGENT'])); 
 $context = stream_context_create($opts);
-$file = file_get_contents($url,false,$context);
+$file = @file_get_contents($url,false,$context);
+
+// Check if content is valid
+if($file === FALSE) {
+	header("Location: ./?error=invalidshow");
+}
 
 $cookies = array();
 foreach ($http_response_header as $hdr) {
