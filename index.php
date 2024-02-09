@@ -18,8 +18,6 @@ if(isset($_GET["show"]) ){
 	} else {
 		echo("Invalid Show!<br/>");
 	}
-} else {
-	echo("No variable<br/>");
 }
 
 // Scrape Ticketing Webpage
