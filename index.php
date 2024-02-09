@@ -197,7 +197,6 @@ $show_name = $title_matches[1][0];
 						break;
 					default:
 						var btnClass = "btn-secondary";
-						break;
 				}
 				thisPerformance.querySelector('.btn').classList.add(btnClass);
 				
