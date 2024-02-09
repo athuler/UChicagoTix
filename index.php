@@ -195,6 +195,9 @@ $show_name = $title_matches[1][0];
 					case "E":
 						var btnClass = "btn-success";
 						break;
+					default:
+						var btnClass = "btn-secondary";
+						break;
 				}
 				thisPerformance.querySelector('.btn').classList.add(btnClass);
 				
