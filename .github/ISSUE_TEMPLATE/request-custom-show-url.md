@@ -7,10 +7,13 @@ assignees: athuler
 
 ---
 
-# Instructions
+**Instructions:**
+
 Replace everything below that is between brackets
 (ex: `UChicagoTix/[SHOW NAME HERE]` ==> `UChicagoTix/falsettos`)
 
 My show name is: [SHOW NAME HERE]
+
 The ticket link for my show is: [CURRENT TICKET LINK]
+
 I want my custom URL to be: https://andreithuler.com/UChicagoTix/[CUSTOM URL HERE]
