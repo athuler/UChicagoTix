@@ -4,7 +4,7 @@
 $json = json_decode(file_get_contents("show_urls.json"), true);
 
 // Falsettos is the default URL
-$url = "https://tickets.uchicago.edu/Online/default.asp?doWork::WScontent::loadArticle=Load&BOparam::WScontent::loadArticle::article_id=80CABB0D-1081-4DC3-BDEC-FFBD195F45E1";
+//$url = "https://tickets.uchicago.edu/Online/default.asp?doWork::WScontent::loadArticle=Load&BOparam::WScontent::loadArticle::article_id=80CABB0D-1081-4DC3-BDEC-FFBD195F45E1";
 
 // Check Whether a Show URL is Provided
 if(isset($_GET["show"]) ){
@@ -29,53 +29,74 @@ if(isset($_GET["show"]) ){
 	}
 }
 
-
-// Scrape Ticketing Webpage
-$opts = array('http'=>array('header' => "User-Agent:" . $_SERVER['HTTP_USER_AGENT'])); 
-$context = stream_context_create($opts);
-$file = @file_get_contents($url,false,$context);
-
-// Check if content is valid
-if($file === FALSE) {
-	header("Location: ./?error=invalidshow");
+function getPageData($file) {
+	$pattern = '~var articleContext = {(.*?)};~s';
+	preg_match_all($pattern, $file, $matches);
+	return($matches);
 }
 
-$cookies = array();
-foreach ($http_response_header as $hdr) {
-	if (preg_match('/^Set-Cookie:\s*([^;]+)/', $hdr, $matches)) {
-		parse_str($matches[1], $tmp);
-		$cookies += $tmp;
-		//var_dump($tmp);
+
+$displaying_show = isset($url);
+if($displaying_show) {
+	
+	// Show is being shown
+
+	// Scrape Ticketing Webpage
+	$opts = array('http'=>array('header' => "User-Agent:" . $_SERVER['HTTP_USER_AGENT'])); 
+	$context = stream_context_create($opts);
+	$file = @file_get_contents($url,false,$context);
+
+	// Check if content is valid
+	if($file === FALSE) {
+		header("Location: ./?error=invalidshow");
 	}
+
+	// Save Cookies
+	$cookies = array();
+	foreach ($http_response_header as $hdr) {
+		if (preg_match('/^Set-Cookie:\s*([^;]+)/', $hdr, $matches)) {
+			parse_str($matches[1], $tmp);
+			$cookies += $tmp;
+		}
+	}
+
+	// Set Cookies
+	foreach($cookies as $cookieName => $cookieValue) {
+		setcookie($cookieName,$cookieValue);
+	}
+
+	// Get Page Data
+	$matches = getPageData($file);
+
+	// Get header image
+	$pattern = '~<img alt="" src="/(.*?)"/>~s';
+	preg_match_all($pattern, $file, $header_matches);
+	if(sizeof($header_matches[1]) != 0) {
+		$header_src = $header_matches[1][0];
+	} else{
+		$header_src = "";
+	}
+
+	// Get show title
+	$pattern = '~<title>(.*?)</title>~s';
+	preg_match_all($pattern, $file, $title_matches);
+	$show_name = $title_matches[1][0];
+} else {
+
+	// Displaying the homepage
+	
+	
+	$opts = array('http'=>array('header' => "User-Agent:" . $_SERVER['HTTP_USER_AGENT'])); 
+	$context = stream_context_create($opts);
+	$file = @file_get_contents("https://tickets.uchicago.edu",false,$context);
+
+	// Check if content is valid
+	if($file === FALSE) {
+		exit("A major unexpected error occured.");
+	}
+	
+	$home_data = getPageData($file);
 }
-foreach($cookies as $cookieName => $cookieValue) {
-	setcookie($cookieName,$cookieValue);
-}
-//var_dump($cookies);
-
-
-// Get Performances Data
-$pattern = '~var articleContext = {(.*?)};~s';
-preg_match_all($pattern, $file, $matches);
-//var_dump($matches);
-
-// Get header image
-$pattern = '~<img alt="" src="/(.*?)"/>~s';
-preg_match_all($pattern, $file, $header_matches);
-//var_dump($header_matches);
-if(sizeof($header_matches[1]) != 0) {
-	$header_src = $header_matches[1][0];
-} else{
-	$header_src = "";
-}
-
-
-// Get show title
-$pattern = '~<title>(.*?)</title>~s';
-preg_match_all($pattern, $file, $title_matches);
-//var_dump($title_matches);
-$show_name = $title_matches[1][0];
-
 
 ?>
 <!DOCTYPE html>
@@ -90,8 +111,10 @@ $show_name = $title_matches[1][0];
 
 			gtag('config', 'G-NBY0B8EGKP');
 		</script>
-
-		<title><?=$show_name;?> Tickets</title>
+		
+		<?php if($displaying_show) { ?>		
+			<title><?=$show_name;?> Tickets</title>
+		<?php } else { ?><title>Home</title><?php } ?>
 		
 		<!-- Bootstrap -->
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -101,8 +124,11 @@ $show_name = $title_matches[1][0];
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body class="container">
+		<?php if($displaying_show) { ?>
 		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid" alt="" id="headerImg">
-		<h1><?=$show_name;?></h1>
+		<?php if($displaying_show) { ?>
+			<h1><?=$show_name;?></h1>
+		<?php } else { ?><h1>Home</h1><?php } ?>
 		
 		<p><i id="show_location"></i> (<a id="location_map" href="" target="__blank">Map</a>)</p>
 		
@@ -215,16 +241,23 @@ $show_name = $title_matches[1][0];
 				}
 				thisPerformance.querySelector('.btn').classList.add(btnClass);
 				
-				
-				
-				
-				
 			}
 			
 			// Delete Template
 			template.remove();
 			
 		</script>
+		
+		
+		<?php } else { ?>
+		<h1>UChicago Ticketing</h1>
+		<a href="falsettos">Falsettos</a><br/>
+		<a href="oedipus">Oedipus</a><br/>
+		<a href="richardiii">Richard III</a><br/>
+		
+		
+		<?php } ?>
+		
 		
 		<style>
 			#performanceTemplate {visibility: hidden;}
