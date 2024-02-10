@@ -250,11 +250,56 @@ if($displaying_show) {
 		
 		
 		<?php } else { ?>
-		<h1>UChicago Ticketing</h1>
-		<a href="falsettos">Falsettos</a><br/>
-		<a href="oedipus">Oedipus</a><br/>
-		<a href="richardiii">Richard III</a><br/>
+		<h1>UChicago Ticketing</h1><br/>
 		
+		<div class="row row-cols-2 row-cols-md-4 g-4">
+			<div id="performanceTemplate" class="col">
+				<div class="card">
+					<img src="" class="card-img-top" alt="">
+					<div class="card-body">
+						<!--<h5 class="card-title ">Show title</h5>-->
+						<span class="card-text showName">Description</span>
+						<a class="stretched-link"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script>
+			
+			// Load Show Data
+			var jsObject = {<?=$home_data[1][0];?>};
+			console.debug(jsObject);
+			
+			// Set Template Element
+			template = document.getElementById("performanceTemplate");
+			
+			// Display Each Performance
+			for (const show of jsObject["searchResults"]){
+				console.debug(show);
+				
+				// Create New Performance
+				let thisPerformance = template.cloneNode(true);
+				template.before(thisPerformance); // Set Position
+				
+				// Reset Performance ID
+				thisPerformance.id = show[0];
+				
+				
+				// Set Performance Name
+				thisPerformance.querySelector('.showName').textContent = show[5];
+				
+				// Set Performance Thumbnail
+				thisPerformance.querySelector('.card-img-top').src = "https://tickets.uchicago.edu/"+show[20];
+				
+				// Set Performance Link
+				thisPerformance.querySelector('a').href = show[0];
+				
+				// Set Performance Description
+				//thisPerformance.querySelector('.card-text').textContent = show[1]+" - "+show[2];
+			}
+			
+		</script>
 		
 		<?php } ?>
 		
