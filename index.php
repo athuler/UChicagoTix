@@ -125,17 +125,23 @@ if($displaying_show) {
 	</head>
 	<body class="container">
 		<?php if($displaying_show) { ?>
-		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid" alt="" id="headerImg">
-		<?php if($displaying_show) { ?>
-			<h1><?=$show_name;?></h1>
-		<?php } else { ?><h1>Home</h1><?php } ?>
+		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid" alt="" id="headerImg"><br/><br/>
+		<a href="./"><button class="btn btn-outline-secondary">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+				<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+			</svg>
+			Home
+		</button></a>
+		<h1><?=$show_name;?></h1>
 		
-		<p><i id="show_location"></i> (<a id="location_map" href="" target="__blank">Map</a>)</p>
+		<p id="locationLine"><i id="show_location"></i> (<a id="location_map" href="" target="__blank">Map</a>)</p>
+		
+		<p id="showDescription"></p>
 		
 		<!-- All Performances -->
 		<div class="card">
 			<div class="card-header">
-				<span id="num_performances"></span> Performances
+				<span id="num_performances"></span>
 			</div>
 			
 			<!-- Performance Template -->
@@ -181,13 +187,52 @@ if($displaying_show) {
 			template = document.getElementById("performanceTemplate");
 			
 			// Set Show Location
-			document.getElementById("show_location").textContent = jsObject["searchResults"][0][63];
+			if(jsObject["searchResults"][0][63] != "") {
+				document.getElementById("show_location").textContent = jsObject["searchResults"][0][63];
+				
+				// Set Map
+				document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58];
+			} else {
+				document.getElementById("locationLine").remove();
+			}
 			
-			// Set Map
-			document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58];
 			
-			// Set Number of Performances
-			document.getElementById("num_performances").textContent = jsObject["searchResults"].length;
+			
+			// Set Number of Performances / Subscriptions / Merchandise
+			var num_performances = 0;
+			var num_subscriptions = 0;
+			var num_merch = 0;
+			for (const performance of jsObject["searchResults"]) {
+				switch(performance[1]) {
+					case "P":
+						num_performances += 1;
+						break;
+					case "B":
+						num_subscriptions += 1;
+						break;
+					case "M":
+						num_merch += 1;
+						break;
+					default:
+						console.log(performance[1]);
+				}
+			}
+			var perf_string = "";
+			if (num_performances > 0) {
+				perf_string += num_performances + " Performances ";
+			}
+			if (num_subscriptions > 0) {
+				perf_string += num_subscriptions + " Subscriptions ";
+			}
+			if (num_merch > 0) {
+				perf_string += num_merch + " Merchandise ";
+				console.log("---");
+			}
+			document.getElementById("num_performances").textContent = perf_string;
+			
+			
+			// Set Show Description
+			document.getElementById("showDescription").textContent = jsObject["searchResults"][0][5];
 			
 			// Display Each Performance
 			for (const performance of jsObject["searchResults"]){
@@ -201,7 +246,11 @@ if($displaying_show) {
 				thisPerformance.id = performance[0];
 				
 				// Set Performance Date & time
-				thisPerformance.querySelector('.perf_date').textContent = performance[7];
+				if(performance[7] != "") {
+					thisPerformance.querySelector('.perf_date').textContent = performance[7];
+				} else {
+					thisPerformance.querySelector('.perf_date').textContent = performance[6];
+				}
 				
 				// Set Buy Button Session Token
 				thisPerformance.querySelector('.sessionToken').value = jsObject["sToken"];
@@ -211,12 +260,19 @@ if($displaying_show) {
 				thisPerformance.querySelector('.perf_id2').value = performance[0];
 				
 				// Set Number of Tickets Left
-				if(performance[16] != 0) {
-					thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
+				if(!isNaN(parseInt(performance[16]))) {
+					if(performance[16] != 0) {
+						thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
+					}
+					if (performance[16] == 0){
+						thisPerformance.querySelector('.perf_tix_left').textContent = "Sold Out!";
+					}
 				} else {
-					thisPerformance.querySelector('.perf_tix_left').textContent = "Sold Out!";
-					thisPerformance.querySelector('form').remove();
+					thisPerformance.querySelector('.perf_tix_left').remove();
 				}
+				
+				// Remove Buying form (buying mechanic currently unavailable)
+				thisPerformance.querySelector('form').remove();
 				
 				// Set Whether Buying is possible
 				if(performance[14] != "S") {
