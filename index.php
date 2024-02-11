@@ -124,21 +124,42 @@ if($displaying_show) {
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body class="container">
-		
-		
+		<!-- About This Project Modal -->
+		<div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">About This Project</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						This is an <b>unofficial</b> ticketing site made by <a href="https://andreithuler.com/" target="__blank">Andrei Thüler</a> built on top of <a href="https://tickets.uchicago.edu/" target="__blank">UChicago's Ticketing System</a> which is powered by <i>AudienceView</i>.
+					</div>
+					<div class="modal-footer justify-content-center">
+						<a href="https://github.com/athuler/UChicagoTix/" target="__blank">Source Code</a> | <a href="https://github.com/athuler/UChicagoTix/issues" target="__blank">Report a bug</a>
+						<!--<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>-->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Modal -->
 		
 		<!-- Displaying a Show -->
 		<?php if($displaying_show) { ?>
 		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid rounded mx-auto d-block" alt="" id="headerImg" style="">
 		<br/>
 		<div class="row">
-			<a href="./" class="col"><button class="btn btn-outline-secondary">
+			<!-- Back to home -->
+			<a href="./" class="col-auto"><button class="btn btn-outline-secondary">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
 					<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
 				</svg>
 				Home
 			</button></a>
-			<a><button class="btn btn-outline-secondary">What's this?</button></a>
+			
+			<!-- About the project -->
+			<button class="btn btn-outline-secondary col-auto float-end ms-auto" data-bs-toggle="modal" data-bs-target="#aboutModal">What's this?</button>
 		</div>
 		<h1><?=$show_name;?></h1>
 		
