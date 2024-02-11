@@ -124,14 +124,22 @@ if($displaying_show) {
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body class="container">
+		
+		
+		
+		<!-- Displaying a Show -->
 		<?php if($displaying_show) { ?>
-		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid" alt="" id="headerImg"><br/><br/>
-		<a href="./"><button class="btn btn-outline-secondary">
-			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-				<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-			</svg>
-			Home
-		</button></a>
+		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid rounded mx-auto d-block" alt="" id="headerImg" style="">
+		<br/>
+		<div class="row">
+			<a href="./" class="col"><button class="btn btn-outline-secondary">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+					<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+				</svg>
+				Home
+			</button></a>
+			<a><button class="btn btn-outline-secondary">What's this?</button></a>
+		</div>
 		<h1><?=$show_name;?></h1>
 		
 		<p id="locationLine"><i id="show_location"></i> (<a id="location_map" href="" target="__blank">Map</a>)</p>
@@ -362,6 +370,7 @@ if($displaying_show) {
 		
 		<style>
 			#performanceTemplate {visibility: hidden;}
+			#headerImg {height:100% !important;}
 		</style>
 		
 		<!-- Bootstrap -->
