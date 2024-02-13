@@ -114,7 +114,7 @@ if($displaying_show) {
 		
 		<?php if($displaying_show) { ?>		
 			<title><?=$show_name;?> Tickets</title>
-		<?php } else { ?><title>Home</title><?php } ?>
+		<?php } else { ?><title>UChicago Ticketing System</title><?php } ?>
 		
 		<!-- Bootstrap -->
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -335,7 +335,12 @@ if($displaying_show) {
 		
 		
 		<?php } else { ?>
-		<h1>UChicago Ticketing</h1><br/>
+		<div class="row">
+			<h1 class="col-auto">UChicago Ticketing</h1><br/>
+			<button class="btn btn-outline-secondary col-auto float-end ms-auto" data-bs-toggle="modal" data-bs-target="#aboutModal">What's this?</button>
+		</div>
+		
+		<br/>
 		
 		<div class="row row-cols-2 row-cols-md-4 g-4">
 			<div id="performanceTemplate" class="col">
@@ -343,7 +348,7 @@ if($displaying_show) {
 					<img src="" class="card-img-top" alt="">
 					<div class="card-body">
 						<!--<h5 class="card-title ">Show title</h5>-->
-						<span class="card-text showName">Description</span>
+						<span class="card-text showName">Show Name</span>
 						<a class="stretched-link"></a>
 					</div>
 				</div>
@@ -372,7 +377,11 @@ if($displaying_show) {
 				
 				
 				// Set Performance Name
-				thisPerformance.querySelector('.showName').textContent = show[5];
+				if(show[5] != "") {
+					thisPerformance.querySelector('.showName').textContent = show[5];
+				} else {
+					thisPerformance.querySelector('.showName').textContent = "No Name Provided";
+				}
 				
 				// Set Performance Thumbnail
 				thisPerformance.querySelector('.card-img-top').src = "https://tickets.uchicago.edu/"+show[20];
