@@ -136,9 +136,10 @@ if($displaying_show) {
 						This is an <b>unofficial</b> ticketing site made by <a href="https://andreithuler.com/" target="__blank">Andrei Thüler</a> built on top of <a href="https://tickets.uchicago.edu/" target="__blank">UChicago's Ticketing System</a> which is powered by <i>AudienceView</i>.
 					</div>
 					<div class="modal-footer justify-content-center">
-						<a href="https://github.com/athuler/UChicagoTix/" target="__blank">Source Code</a> | <a href="https://github.com/athuler/UChicagoTix/issues" target="__blank">Report a bug</a>
-						<!--<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save changes</button>-->
+						<!--🧑‍💻 <a href="https://github.com/athuler/UChicagoTix/" target="__blank">Source Code</a> |-->
+						🪲 <a href="https://github.com/athuler/UChicagoTix/issues" target="__blank">Report a bug</a> |
+						📝 <a href="https://andreithuler.com/projects/" target="__blank">Other Projects</a> |
+						📧 <a href="http://eepurl.com/gnbarf" target="__blank">Email List</a>
 					</div>
 				</div>
 			</div>
@@ -352,6 +353,9 @@ if($displaying_show) {
 		
 		
 		<?php } else { ?>
+		
+		<!-- Displaying the Homepage -->
+		<br/>
 		<div class="row">
 			<h1 class="col-auto">UChicago Ticketing</h1><br/>
 			<button class="btn btn-outline-secondary col-auto float-end ms-auto" data-bs-toggle="modal" data-bs-target="#aboutModal">What's this?</button>
