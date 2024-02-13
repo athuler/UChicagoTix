@@ -69,7 +69,7 @@ if($displaying_show) {
 	$matches = getPageData($file);
 
 	// Get header image
-	$pattern = '~<img alt="" src="/(.*?)"/>~s';
+	$pattern = '~<img alt="" src="/(.*?)"~s';
 	preg_match_all($pattern, $file, $header_matches);
 	if(sizeof($header_matches[1]) != 0) {
 		$header_src = $header_matches[1][0];
@@ -147,7 +147,7 @@ if($displaying_show) {
 		
 		<!-- Displaying a Show -->
 		<?php if($displaying_show) { ?>
-		<img src="https://tickets.uchicago.edu/<?=$header_src;?>" class="img-fluid rounded mx-auto d-block" alt="" id="headerImg" style="">
+		<img src="https://tickets.uchicago.edu/" class="img-fluid rounded mx-auto d-block" alt="" id="headerImg" style="">
 		<br/>
 		<div class="row">
 			<!-- Back to home -->
@@ -210,7 +210,12 @@ if($displaying_show) {
 			console.debug(jsObject);
 			
 			// Set Header Image
-			//document.getElementById("headerImg").src = "https://tickets.uchicago.edu"+jsObject["searchResults"][0][20];
+			var headerImgUrl = "<?=$header_src;?>";
+			if(headerImgUrl != "") {
+				document.getElementById("headerImg").src = "https://tickets.uchicago.edu/"+headerImgUrl;
+			} else {
+				document.getElementById("headerImg").src = "https://tickets.uchicago.edu/content/Images/UC%20Arts%20Images/UChicagoArts_Horizontal_GreyMaroonRGB.png";
+			}
 			
 			// Set Template Element
 			template = document.getElementById("performanceTemplate");
@@ -384,7 +389,11 @@ if($displaying_show) {
 				}
 				
 				// Set Performance Thumbnail
-				thisPerformance.querySelector('.card-img-top').src = "https://tickets.uchicago.edu/"+show[20];
+				if(show[20] != "") {
+					thisPerformance.querySelector('.card-img-top').src = "https://tickets.uchicago.edu/"+show[20];
+				} else {
+				thisPerformance.querySelector('.card-img-top').src = "https://tickets.uchicago.edu/content/Images/UC%20Arts%20Images/UChicagoArts_Horizontal_GreyMaroonRGB.png";
+				}
 				
 				// Set Performance Link
 				thisPerformance.querySelector('a').href = show[0];
