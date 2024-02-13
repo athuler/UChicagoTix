@@ -168,7 +168,7 @@ if($displaying_show) {
 		<p id="showDescription"></p>
 		
 		<!-- All Performances -->
-		<div class="card">
+		<div class="card" id="performancesCard">
 			<div class="card-header">
 				<span id="num_performances"></span>
 			</div>
@@ -220,121 +220,133 @@ if($displaying_show) {
 			// Set Template Element
 			template = document.getElementById("performanceTemplate");
 			
-			// Set Show Location
-			if(jsObject["searchResults"][0][63] != "") {
-				document.getElementById("show_location").textContent = jsObject["searchResults"][0][63];
+			// Check if show has performances
+			if("searchResults" in jsObject) {
 				
-				// Set Map
-				document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58];
+				// Set Show Location
+				if(jsObject["searchResults"][0][63] != "") {
+					document.getElementById("show_location").textContent = jsObject["searchResults"][0][63];
+					
+					// Set Map
+					document.getElementById("location_map").href = "https://www.google.com/maps/search/?api=1&query="+jsObject["searchResults"][0][55]+" "+jsObject["searchResults"][0][56]+" "+jsObject["searchResults"][0][58];
+				} else {
+					document.getElementById("locationLine").remove();
+				}
+				
+				
+				
+				// Set Number of Performances / Subscriptions / Merchandise
+				var num_performances = 0;
+				var num_subscriptions = 0;
+				var num_merch = 0;
+				for (const performance of jsObject["searchResults"]) {
+					switch(performance[1]) {
+						case "P":
+							num_performances += 1;
+							break;
+						case "B":
+							num_subscriptions += 1;
+							break;
+						case "M":
+							num_merch += 1;
+							break;
+						default:
+							console.log(performance[1]);
+					}
+				}
+				var perf_string = "";
+				if (num_performances > 0) {
+					perf_string += num_performances + " Performances ";
+				}
+				if (num_subscriptions > 0) {
+					perf_string += num_subscriptions + " Subscriptions ";
+				}
+				if (num_merch > 0) {
+					perf_string += num_merch + " Merchandise ";
+					console.log("---");
+				}
+				document.getElementById("num_performances").textContent = perf_string;
+				
+				
+				// Set Show Description
+				document.getElementById("showDescription").textContent = jsObject["searchResults"][0][5];
+				
+				// Display Each Performance
+				for (const performance of jsObject["searchResults"]){
+					console.debug(performance);
+					
+					// Create New Performance
+					let thisPerformance = template.cloneNode(true);
+					template.before(thisPerformance); // Set Position
+					
+					// Reset Performance ID
+					thisPerformance.id = performance[0];
+					
+					// Set Performance Date & time
+					if(performance[7] != "") {
+						thisPerformance.querySelector('.perf_date').textContent = performance[7];
+					} else {
+						thisPerformance.querySelector('.perf_date').textContent = performance[6];
+					}
+					
+					// Set Buy Button Session Token
+					thisPerformance.querySelector('.sessionToken').value = jsObject["sToken"];
+					
+					// Set Buy Button Performance ID
+					thisPerformance.querySelector('.perf_id1').value = performance[0];
+					thisPerformance.querySelector('.perf_id2').value = performance[0];
+					
+					// Set Number of Tickets Left
+					if(!isNaN(parseInt(performance[16]))) {
+						if(performance[16] != 0) {
+							thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
+						}
+						if (performance[16] == 0){
+							thisPerformance.querySelector('.perf_tix_left').textContent = "Sold Out!";
+						}
+					} else {
+						thisPerformance.querySelector('.perf_tix_left').remove();
+					}
+					
+					// Remove Buying form (buying mechanic currently unavailable)
+					thisPerformance.querySelector('form').remove();
+					
+					// Set Whether Buying is possible
+					if(performance[14] != "S") {
+						thisPerformance.querySelector('.buying').removeAttribute("href");
+						thisPerformance.querySelector('.btn').disabled = true;
+						thisPerformance.querySelector('.btn').textContent = "Not on Sale";
+					}
+					
+					// Set Buying button Color
+					switch(performance[15]) {
+						case "G":
+							var btnClass = "btn-warning";
+							break;
+						case "L":
+							var btnClass = "btn-danger";
+							break;
+						case "E":
+							var btnClass = "btn-success";
+							break;
+						default:
+							var btnClass = "btn-secondary";
+					}
+					thisPerformance.querySelector('.btn').classList.add(btnClass);
+					
+				}
+				
+				// Delete Template
+				template.remove();
+				
 			} else {
+				// Delete performance Block
+				document.getElementById("performancesCard").remove();
+				
+				// Remove Location Line
 				document.getElementById("locationLine").remove();
 			}
 			
-			
-			
-			// Set Number of Performances / Subscriptions / Merchandise
-			var num_performances = 0;
-			var num_subscriptions = 0;
-			var num_merch = 0;
-			for (const performance of jsObject["searchResults"]) {
-				switch(performance[1]) {
-					case "P":
-						num_performances += 1;
-						break;
-					case "B":
-						num_subscriptions += 1;
-						break;
-					case "M":
-						num_merch += 1;
-						break;
-					default:
-						console.log(performance[1]);
-				}
-			}
-			var perf_string = "";
-			if (num_performances > 0) {
-				perf_string += num_performances + " Performances ";
-			}
-			if (num_subscriptions > 0) {
-				perf_string += num_subscriptions + " Subscriptions ";
-			}
-			if (num_merch > 0) {
-				perf_string += num_merch + " Merchandise ";
-				console.log("---");
-			}
-			document.getElementById("num_performances").textContent = perf_string;
-			
-			
-			// Set Show Description
-			document.getElementById("showDescription").textContent = jsObject["searchResults"][0][5];
-			
-			// Display Each Performance
-			for (const performance of jsObject["searchResults"]){
-				console.debug(performance);
-				
-				// Create New Performance
-				let thisPerformance = template.cloneNode(true);
-				template.before(thisPerformance); // Set Position
-				
-				// Reset Performance ID
-				thisPerformance.id = performance[0];
-				
-				// Set Performance Date & time
-				if(performance[7] != "") {
-					thisPerformance.querySelector('.perf_date').textContent = performance[7];
-				} else {
-					thisPerformance.querySelector('.perf_date').textContent = performance[6];
-				}
-				
-				// Set Buy Button Session Token
-				thisPerformance.querySelector('.sessionToken').value = jsObject["sToken"];
-				
-				// Set Buy Button Performance ID
-				thisPerformance.querySelector('.perf_id1').value = performance[0];
-				thisPerformance.querySelector('.perf_id2').value = performance[0];
-				
-				// Set Number of Tickets Left
-				if(!isNaN(parseInt(performance[16]))) {
-					if(performance[16] != 0) {
-						thisPerformance.querySelector('.perf_tix_left').textContent = performance[16] + " tickets left";
-					}
-					if (performance[16] == 0){
-						thisPerformance.querySelector('.perf_tix_left').textContent = "Sold Out!";
-					}
-				} else {
-					thisPerformance.querySelector('.perf_tix_left').remove();
-				}
-				
-				// Remove Buying form (buying mechanic currently unavailable)
-				thisPerformance.querySelector('form').remove();
-				
-				// Set Whether Buying is possible
-				if(performance[14] != "S") {
-					thisPerformance.querySelector('.buying').removeAttribute("href");
-					thisPerformance.querySelector('.btn').disabled = true;
-					thisPerformance.querySelector('.btn').textContent = "Not on Sale";
-				}
-				
-				// Set Buying button Color
-				switch(performance[15]) {
-					case "G":
-						var btnClass = "btn-warning";
-						break;
-					case "L":
-						var btnClass = "btn-danger";
-						break;
-					case "E":
-						var btnClass = "btn-success";
-						break;
-					default:
-						var btnClass = "btn-secondary";
-				}
-				thisPerformance.querySelector('.btn').classList.add(btnClass);
-				
-			}
-			
-			// Delete Template
-			template.remove();
 			
 		</script>
 		
