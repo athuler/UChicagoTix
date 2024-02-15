@@ -133,7 +133,7 @@ if($displaying_show) {
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						This is an <b>unofficial</b> ticketing site made by <a href="https://andreithuler.com/" target="__blank">Andrei Thüler</a> built on top of <a href="https://tickets.uchicago.edu/" target="__blank">UChicago's Ticketing System</a> which is powered by <i>AudienceView</i>.
+						This is an <b>unofficial</b> ticketing site made by <a href="https://andreithuler.com/" target="__blank">Andrei Thüler</a> built on top of <a href="https://tickets.uchicago.edu/" target="__blank">UChicago's Ticketing System</a>.
 					</div>
 					<div class="modal-footer justify-content-center">
 						<!--🧑‍💻 <a href="https://github.com/athuler/UChicagoTix/" target="__blank">Source Code</a> |-->
@@ -144,7 +144,27 @@ if($displaying_show) {
 				</div>
 			</div>
 		</div>
-		<!-- End Modal -->
+		<!-- End About Modal -->
+		
+		<!-- Privacy Modal -->
+		<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="privacyModalLabel">Privacy</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						We use Google Analytics which collects various data points on user behavior to help us improve this tool. That data is subject to <a href="https://policies.google.com/privacy" target="__blank">Google's Privacy Policy</a>.<br/><br/>
+						If you choose to switch between light/dark mode, we store a cookie on your browser to remember your choice.
+					</div>
+					<div class="modal-footer justify-content-center">
+						<a href="#aboutModal" data-bs-toggle="modal" data-bs-target="#aboutModal" >About this Project</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Privacy Modal -->
 		
 		<!-- Displaying a Show -->
 		<?php if($displaying_show) { ?>
@@ -210,9 +230,7 @@ if($displaying_show) {
 			</ul>
 		</div>
 		
-		<!-- Footer -->
-		<br/><hr/>
-		Made by <a href="https://andreithuler.com/" target="__blank">Andrei Thüler</a>.
+		
 		
 		<script>
 			
@@ -368,7 +386,7 @@ if($displaying_show) {
 		<br/>
 		<div class="row">
 			<!-- Home Title -->
-			<h1 class="col-auto">UChicago Ticketing</h1><br/>
+			<h1 class="col-auto">UChiTix</h1><br/>
 			
 			<div class="col-auto float-end ms-auto">
 				<!-- About This Project -->
@@ -445,6 +463,14 @@ if($displaying_show) {
 		
 		<?php } ?>
 		
+		<!-- Footer -->
+		<br/><hr/>
+		<div class="text-center">
+			<a data-bs-toggle="modal" data-bs-target="#aboutModal" href="#aboutModal">About</a> |
+			<a data-bs-toggle="modal" data-bs-target="#privacyModal" href="#privacyModal">Privacy</a>
+		</div>
+		<br/><br/>
+		
 		<!-- Universal Scripts -->
 		<script>
 			function getCookie(cname) {
@@ -460,7 +486,7 @@ if($displaying_show) {
 						return c.substring(name.length, c.length);
 					}
 				}
-				return "";
+				return "dark";
 			}
 			document.documentElement.setAttribute('data-bs-theme', getCookie("theme"));
 			
