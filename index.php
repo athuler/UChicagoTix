@@ -208,23 +208,35 @@ if($displaying_show) {
 			<ul class="list-group list-group-flush">
 				<div></div>
 				<li id="performanceTemplate" class="list-group-item">
-					<div class="card-body row">
-						
-						<!-- Performance Date -->
-						<span class="perf_date col-auto"></span>
-						
-						<!-- Number of Tickets Left -->
-						<i class="perf_tix_left col-auto"></i>
-						
-						<!-- Buy Now -->
-						<a href="<?=$url;?>" target="__blank" class="col-auto float-end buying"><button class="btn">Buy Now!</button></a>
-						
-						<form style="visibility:hidden;">
-							<input class="sessionToken" type="hidden" name="sToken" value="" />
-							<input class="perf_id1" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_ids" value="" />
-							<input class="perf_id2" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_id" value="" />
-							<input type="hidden" name="createBO::WSmap" value="1" />
-						</form>
+					<div class="row g-0">
+					<!-- Event Thumbnail -->
+					<div class="col-md-2 thumbCol">
+						<img src="" class="img-fluid rounded-start perfThumb" alt="...">
+					</div>
+					
+					<!-- Card Body -->
+					<div class="col-md-10 bodyCol">
+						<div class="card-body row">
+							<!-- Performance Title -->
+							<p class="perfTitle"></p>
+							
+							<!-- Performance Date -->
+							<span class="perf_date col-auto"></span>
+							
+							<!-- Number of Tickets Left -->
+							<i class="perf_tix_left col-auto"></i>
+							
+							<!-- Buy Now -->
+							<a href="<?=$url;?>" target="__blank" class="col-auto float-end buying"><button class="btn">Buy Now!</button></a>
+							
+							<form style="visibility:hidden;">
+								<input class="sessionToken" type="hidden" name="sToken" value="" />
+								<input class="perf_id1" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_ids" value="" />
+								<input class="perf_id2" type="hidden" name="BOparam::WSmap::loadBestAvailable::performance_id" value="" />
+								<input type="hidden" name="createBO::WSmap" value="1" />
+							</form>
+						</div>
+					</div>
 					</div>
 				</li>
 			</ul>
@@ -241,9 +253,19 @@ if($displaying_show) {
 			// Set Header Image
 			var headerImgUrl = "<?=$header_src;?>";
 			if(headerImgUrl != "") {
+				// Header Provided by PHP
 				document.getElementById("headerImg").src = "https://tickets.uchicago.edu/"+headerImgUrl;
 			} else {
+				// No Header Image Provided and No Performances
 				document.getElementById("headerImg").src = "https://tickets.uchicago.edu/content/Images/UC%20Arts%20Images/UChicagoArts_Horizontal_GreyMaroonRGB.png";
+			
+				if ("searchResults" in jsObject) {
+					if(jsObject["searchResults"][0][20]!="") {
+						// No Header Provided, Use Header From First
+						// Performance If It Has One
+						document.getElementById("headerImg").src = "https://tickets.uchicago.edu" + jsObject["searchResults"][0][20];
+					}
+				} 
 			}
 			
 			// Set Template Element
@@ -299,6 +321,31 @@ if($displaying_show) {
 				
 				// Set Show Description
 				document.getElementById("showDescription").textContent = jsObject["searchResults"][0][5];
+				
+				// Check for thumbnail/title change
+				let firstThumb = null;
+				let firstTitle = null;
+				let diffThumbs = false;
+				let diffTitles = false;
+				for (const performance of jsObject["searchResults"]) {
+					// Check if Thumbnails Change
+					if (firstThumb == null) {
+						firstThumb = performance[20];
+					}
+					if(performance[20] != firstThumb && diffThumbs == false) {
+						diffThumbs = true;
+					}
+					
+					// Check if Performance Titles Change
+					if (firstTitle == null) {
+						firstTitle = performance[6];
+					}
+					if(performance[6] != firstTitle && diffTitles == false) {
+						diffTitles = true;
+					}
+					
+				}
+				console.log(diffThumbs);
 				
 				// Display Each Performance
 				for (const performance of jsObject["searchResults"]){
@@ -363,6 +410,21 @@ if($displaying_show) {
 					}
 					thisPerformance.querySelector('.btn').classList.add(btnClass);
 					
+					// Set Performance Thumbnail
+					if(performance[20] != "" && diffThumbs == true) {
+						thisPerformance.querySelector('.perfThumb').src = "https://tickets.uchicago.edu"+performance[20];
+					} else {
+						// No Thumbnail provided
+						thisPerformance.querySelector('.thumbCol').remove();
+						thisPerformance.querySelector('.bodyCol').classList.remove("col-md-10");
+					}
+					
+					// Set Performance Title
+					if(performance[6] != "" && diffTitles == true) {
+						thisPerformance.querySelector('.perfTitle').textContent = performance[6];
+					} else {
+						thisPerformance.querySelector('.perfTitle').remove();
+					}
 				}
 				
 				// Delete Template
