@@ -1,5 +1,7 @@
 # UChicago Ticketing System
 
+[![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/151ct.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
+
 This is an ***unofficial*** site built on top of
 [UChicago's ticketing infrastructure](https://tickets.uchicago.edu "UChicago Tickets").
 The main differences between the systems are:
